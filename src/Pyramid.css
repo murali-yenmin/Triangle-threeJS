@@ -1,0 +1,71 @@
+.pyramid-overlay {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+
+.pyramid-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    
+}
+
+.pyramid-dot {
+    width: 30px;
+    height: 30px;
+    background-color: black;
+    border: 2px solid #00ffff;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #00ffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pyramid-DotInner {
+    width: 10px;
+    height: 10px;
+    background-color: white;
+    border-radius: 50%;
+}
+
+button {
+    color: white;
+    font-size: 20px;
+    font-family: 'Raleway', sans-serif;
+    background-color: black;
+    padding: 10px 20px;
+    font-weight: 700;
+    border: 2px solid #00ffff;
+    border-radius: 20px;
+    box-shadow: 0 0 10px #00ffff;
+    letter-spacing: 0.5rem;
+}
+.menu-ui {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    gap: 30px;
+    z-index: 999;
+}
+
+.menu-ui button {
+    font-size: 20px;
+    padding: 10px 20px;
+    background: black;
+    border: 2px solid #00ffff;
+    color: #00ffff;
+    text-shadow: 0 0 10px #00ffff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.menu-ui button:hover {
+    background: #00ffff;
+    color: black;
+}
