@@ -1,0 +1,22 @@
+.report-selection h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+.report-list li {
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+.report-container {
+  height: 700px;
+  margin-top: 20px;
+}
+.error-message {
+  color: red;
+  font-weight: bold;
+  margin-top: 20px;
+}
+.report-style-class{
+  height: 90vh;
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "id": "8d7a34d6-af6c-4e86-8a11-5b72ba917488",
+    "name": "Sales Report",
+    "embedUrl": "https://app.powerbi.com/view?r=eyJrIjoiZTZmNjJhYjgtMzM1Zi00NDJhLWExZTYtNmRlMzUwMWI5ZTU1IiwidCI6ImEwYjAzOWVmLTdmMGUtNDZjOS04NjNhLTk0ODRhMGM4MDY3NCJ9"
+  },
+  {
+    "id": "some-other-id",
+    "name": "Finance Report",
+    "embedUrl": "https://app.powerbi.com/view?r=eyJrIjoiMGZhM2I3YmEtY2I3Ny00ZDM4LThmZGItOWFmYmExODBhNzViIiwidCI6ImEwYjAzOWVmLTdmMGUtNDZjOS04NjNhLTk0ODRhMGM4MDY3NCJ9"  
+  }
+]
