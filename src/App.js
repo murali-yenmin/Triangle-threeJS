@@ -4,8 +4,9 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { OrbitControls } from "@react-three/drei";
 
 import { pyramidLayers, cameraPosition } from "./utils/constants";
-import NeonPyramid from "./Components/LayerPyramid";
-import SceneBackground from "./Components/SceneBackground";
+import NeonPyramid from "./components/LayerPyramid";
+import SceneBackground from "./components/SceneBackground";
+// import PowerBIEmbeded from "./components/PowerBIEmbeded";
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
         </EffectComposer>
         <OrbitControls enableZoom={false} />
       </Canvas>
+      {/* <PowerBIEmbeded /> */}
     </div>
   );
 }
