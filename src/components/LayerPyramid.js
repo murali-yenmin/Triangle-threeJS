@@ -1,5 +1,5 @@
 import React, { useRef, useState, useMemo } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { Environment, Html } from "@react-three/drei";
 import * as THREE from "three";
 import "../assests/css/layer-pyramid.css";
@@ -11,16 +11,21 @@ export default function NeonPyramid({ layers = [] }) {
   const [activeHoverIndex, setActiveHoverIndex] = useState(null);
   const [bubbleHoverIndex, setBubbleHoverIndex] = useState(null);
   const [strictBubbleHoverIndex, setStrictBubbleHoverIndex] = useState(null);
-  const [hoveredAreaCounts, setHoveredAreaCounts] = useState({}); // NEW
+  const [hoveredAreaCounts, setHoveredAreaCounts] = useState({});
 
-  const config = useMemo(
-    () => ({
-      radius: 10,
+  const { viewport } = useThree();
+
+  // Responsive scale factor based on viewport width
+  const scaleFactor = useMemo(() => Math.min(viewport.width / 10, 1), [viewport.width]);
+
+  const config = useMemo(() => {
+    const adjustedRadius = viewport.width < 6 ? 6 : 10;
+    return {
+      radius: adjustedRadius,
       height: 15,
       color: new THREE.Color("#009000"),
-    }),
-    []
-  );
+    };
+  }, [viewport.width]);
 
   const baseY = (i) => {
     const layerH = config.height / layers.length;
@@ -51,12 +56,12 @@ export default function NeonPyramid({ layers = [] }) {
   };
 
   useFrame(() => {
-    groupRef.current.rotation.y += 0.01;
+    if (groupRef.current) groupRef.current.rotation.y += 0.02;
 
     pyramidRefs.current.forEach((ref, index) => {
       if (!ref) return;
-      const offset =
-        activeHoverIndex !== null && index >= activeHoverIndex ? 3 : 0;
+
+      const offset = activeHoverIndex !== null && index >= activeHoverIndex ? 3 : 0;
       ref.position.y = THREE.MathUtils.lerp(
         ref.position.y,
         baseY(index) + offset,
@@ -65,9 +70,12 @@ export default function NeonPyramid({ layers = [] }) {
 
       const bubbleGroup = ref.getObjectByName(`bubble-${index}`);
       if (bubbleGroup) {
+        const baseDrop = -3.5;
+        const extraDrop = index === 0 ? -0.8 : 0;
+        const targetY = activeHoverIndex === index ? baseDrop + extraDrop : 0;
         bubbleGroup.position.y = THREE.MathUtils.lerp(
           bubbleGroup.position.y,
-          activeHoverIndex === index ? -3.5 : 0,
+          targetY,
           0.1
         );
       }
@@ -77,7 +85,11 @@ export default function NeonPyramid({ layers = [] }) {
   return (
     <>
       <Environment preset="warehouse" background={false} />
-      <group ref={groupRef} position={[0, 2, 0]}>
+      <group
+        ref={groupRef}
+        position={[0, viewport.height < 6 ? 1 : 2, 0]}
+        scale={[scaleFactor, scaleFactor, scaleFactor]}
+      >
         {layers.map((layer, i) => {
           const layerHeight = config.height / layers.length;
           const top = config.radius * ((layers.length - i - 1) / layers.length);
@@ -89,11 +101,9 @@ export default function NeonPyramid({ layers = [] }) {
               ref={(el) => (pyramidRefs.current[i] = el)}
               position={[0, baseY(i), 0]}
             >
-              {/* Layer */}
+              {/* Layer Mesh */}
               <mesh
-                geometry={
-                  new THREE.CylinderGeometry(top, bottom, layerHeight, 4)
-                }
+                geometry={new THREE.CylinderGeometry(top, bottom, layerHeight, 4)}
                 material={
                   new THREE.MeshStandardMaterial({
                     color: config.color,
@@ -123,9 +133,9 @@ export default function NeonPyramid({ layers = [] }) {
                 material={new THREE.LineBasicMaterial({ color: config.color })}
               />
 
-              {/* Gap Hover Area */}
+              {/* Invisible Hover Area for Gap */}
               <mesh
-                position={[0, -1.75, 0]}
+                position={[0, -2, 0]}
                 scale={[1.5, 1.5, 1.5]}
                 onPointerOver={(e) => {
                   e.stopPropagation();
@@ -144,7 +154,6 @@ export default function NeonPyramid({ layers = [] }) {
 
               {/* Bubble Group */}
               <group name={`bubble-${i}`} position={[0, 0, 0]}>
-                {/* Bubble Mesh */}
                 <mesh
                   onPointerOver={(e) => {
                     e.stopPropagation();
@@ -167,8 +176,8 @@ export default function NeonPyramid({ layers = [] }) {
                   />
                 </mesh>
 
-                {/* Symbol */}
-                <Html position={[0, 0, 0]} center>
+                {/* Bubble Symbol */}
+                <Html position={[0, i === 0 ? -0.1 : 0, 0]} center>
                   <a
                     href="https://www.google.com"
                     target="_blank"
@@ -192,7 +201,14 @@ export default function NeonPyramid({ layers = [] }) {
                 {/* Bubble Label */}
                 {strictBubbleHoverIndex === i && (
                   <Html position={[0, 0, 0]}>
-                    <div className="bubble-label">{layer.text}</div>
+                    <div
+                      className="bubble-label"
+                      style={{
+                        fontSize: viewport.width < 6 ? "0.6rem" : "0.8rem",
+                      }}
+                    >
+                      {layer.text}
+                    </div>
                   </Html>
                 )}
               </group>

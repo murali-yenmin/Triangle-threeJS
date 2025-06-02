@@ -1,3 +1,9 @@
+body, html {
+  transform: none !important;
+  animation: none !important;
+}
+
+
 .bubble-symbol {
 
     font-size: 20px;
