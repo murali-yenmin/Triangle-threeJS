@@ -1,7 +1,4 @@
-body, html {
-  transform: none !important;
-  animation: none !important;
-}
+
 
 
 .bubble-symbol {
@@ -18,11 +15,13 @@ body, html {
 }
 
 .bubble-label {
-    font-size: 10px;
+    font-size: 25px;
     font-family: "Roboto", sans-serif;
     color: white;
+    transform: translateY(-25%);
     font-weight: 700;
-    padding: 0px 0px 30px 50px;
+    padding: 0px 0px 30px 30px;
+    text-shadow: 0 0 3px white, 0 0 5px white;
     display: flex;
     align-items: center;
     justify-content: center;

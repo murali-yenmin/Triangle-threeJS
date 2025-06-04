@@ -7,6 +7,8 @@ import "../assests/css/layer-pyramid.css";
 export default function NeonPyramid({ layers = [] }) {
   const groupRef = useRef();
   const pyramidRefs = useRef([]);
+  const bubbleInitFlags = useRef({});
+
 
   const [activeHoverIndex, setActiveHoverIndex] = useState(null);
   const [bubbleHoverIndex, setBubbleHoverIndex] = useState(null);
@@ -69,16 +71,41 @@ export default function NeonPyramid({ layers = [] }) {
       );
 
       const bubbleGroup = ref.getObjectByName(`bubble-${index}`);
-      if (bubbleGroup) {
-        const baseDrop = -3.5;
-        const extraDrop = index === 0 ? -0.8 : 0;
-        const targetY = activeHoverIndex === index ? baseDrop + extraDrop : 0;
-        bubbleGroup.position.y = THREE.MathUtils.lerp(
-          bubbleGroup.position.y,
-          targetY,
-          0.1
-        );
-      }
+if (bubbleGroup) {
+  const isZeroLayer = index === 0;
+  const layerHeight = config.height / layers.length;
+  const sphereRadius = 0.8;
+  const verticalNudge = 0.5;
+
+  
+  const centerInsideLayer = -layerHeight / 2 + sphereRadius / 2 + verticalNudge;
+  const baseDrop = -layerHeight / 2 - sphereRadius - 0.5; 
+  const baseExtraPush = 0.3;
+  const zeroLayerExtraPush = 0.6;
+  const totalDrop =
+    baseDrop
+    - baseExtraPush
+    - (isZeroLayer ? zeroLayerExtraPush : 0); 
+
+  const targetY =
+    activeHoverIndex === index
+      ? totalDrop
+      : isZeroLayer
+      ? centerInsideLayer
+      : 0;
+
+  if (isZeroLayer && !bubbleInitFlags.current[index]) {
+    bubbleGroup.position.y = targetY;
+    bubbleInitFlags.current[index] = true;
+  } else {
+    bubbleGroup.position.y = THREE.MathUtils.lerp(
+      bubbleGroup.position.y,
+      targetY,
+      0.1
+    );
+  }
+}
+
     });
   });
 
@@ -177,7 +204,7 @@ export default function NeonPyramid({ layers = [] }) {
                 </mesh>
 
                 {/* Bubble Symbol */}
-                <Html position={[0, i === 0 ? -0.1 : 0, 0]} center>
+                <Html position={[0, 0, 0]} center>
                   <a
                     href="https://www.google.com"
                     target="_blank"
@@ -203,9 +230,7 @@ export default function NeonPyramid({ layers = [] }) {
                   <Html position={[0, 0, 0]}>
                     <div
                       className="bubble-label"
-                      style={{
-                        fontSize: viewport.width < 6 ? "0.6rem" : "0.8rem",
-                      }}
+                      
                     >
                       {layer.text}
                     </div>
@@ -217,5 +242,6 @@ export default function NeonPyramid({ layers = [] }) {
         })}
       </group>
     </>
+    
   );
 }
