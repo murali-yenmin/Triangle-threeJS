@@ -1,6 +1,3 @@
-
-
-
 .bubble-symbol {
 
     font-size: 20px;
@@ -14,16 +11,61 @@
 
 }
 
+
 .bubble-label {
-    font-size: 25px;
-    font-family: "Roboto", sans-serif;
-    color: white;
-    transform: translateY(-25%);
-    font-weight: 700;
-    padding: 0px 0px 30px 30px;
-    text-shadow: 0 0 3px white, 0 0 5px white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
+  position: absolute;
+  white-space: nowrap;
+  padding: 0;
+  top: 50%;
+  font-size: 25px;
+  font-weight: 700;
+  color: white;
+  width: 100px;
+  text-shadow: 0 0 3px white, 0 0 5px white;
+  pointer-events: none;
+  
+  /* Start completely hidden */
+  display: none;
+  opacity: 0;
+  transform: translateY(-50%) ;
+  /* transform-origin: left center; */
+
+}
+
+/* Animation when showing */
+.bubble-label.visible {
+  display: block;
+  animation: slideOut 2s forwards;
+}
+
+/* Animation when hiding */
+.bubble-label.hidden {
+  display: block;
+  animation: slideIn 0s forwards;
+}
+
+@keyframes slideOut {
+  from {
+    left: -35px;
+    opacity: 0;
+    transform: translateY(-50%) ;
+  }
+  to {
+    left:30px;
+    opacity: 1;
+    transform: translateY(-50%) ;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    left: 30px;
+    opacity: 1;
+    transform: translateY(-50%) ;
+  }
+  to {
+    left: -35px;
+    opacity: 0;
+    transform: translateY(-50%) ;
+  }
 }

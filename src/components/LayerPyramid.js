@@ -1,6 +1,7 @@
 import React, { useRef, useState, useMemo } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Environment, Html } from "@react-three/drei";
+import AnimatedLabel from "./AnimatedLabel";
 import * as THREE from "three";
 import "../assests/css/layer-pyramid.css";
 
@@ -71,42 +72,44 @@ export default function NeonPyramid({ layers = [] }) {
       );
 
       const bubbleGroup = ref.getObjectByName(`bubble-${index}`);
-if (bubbleGroup) {
-  const isZeroLayer = index === 0;
-  const layerHeight = config.height / layers.length;
-  const sphereRadius = 0.8;
-  const verticalNudge = 0.5;
+      if (bubbleGroup) {
+        const isZeroLayer = index === 0;
+        const layerHeight = config.height / layers.length;
+        const sphereRadius = 0.8;
+        const verticalNudge = 0.5;
 
-  
-  const centerInsideLayer = -layerHeight / 2 + sphereRadius / 2 + verticalNudge;
-  const baseDrop = -layerHeight / 2 - sphereRadius - 0.5; 
-  const baseExtraPush = 0.3;
-  const zeroLayerExtraPush = 0.6;
-  const totalDrop =
-    baseDrop
-    - baseExtraPush
-    - (isZeroLayer ? zeroLayerExtraPush : 0); 
 
-  const targetY =
-    activeHoverIndex === index
-      ? totalDrop
-      : isZeroLayer
-      ? centerInsideLayer
-      : 0;
+        const centerInsideLayer = -layerHeight / 2 + sphereRadius / 2 + verticalNudge;
+        const baseDrop = -layerHeight / 2 - sphereRadius - 0.5;
+        const baseExtraPush = 0.3;
+        const zeroLayerExtraPush = 0.6;
 
-  if (isZeroLayer && !bubbleInitFlags.current[index]) {
-    bubbleGroup.position.y = targetY;
-    bubbleInitFlags.current[index] = true;
-  } else {
-    bubbleGroup.position.y = THREE.MathUtils.lerp(
-      bubbleGroup.position.y,
-      targetY,
-      0.1
-    );
-  }
-}
+        const totalDrop =
+          baseDrop
+          - baseExtraPush
+          - (isZeroLayer ? zeroLayerExtraPush : 0);
+
+        const targetY =
+          activeHoverIndex === index
+            ? totalDrop
+            : isZeroLayer
+              ? centerInsideLayer
+              : 0;
+
+        if (isZeroLayer && !bubbleInitFlags.current[index]) {
+          bubbleGroup.position.y = targetY;
+          bubbleInitFlags.current[index] = true;
+        } else {
+          bubbleGroup.position.y = THREE.MathUtils.lerp(
+            bubbleGroup.position.y,
+            targetY,
+            0.1
+          );
+        }
+      }
 
     });
+
   });
 
   return (
@@ -132,6 +135,7 @@ if (bubbleGroup) {
               <mesh
                 geometry={new THREE.CylinderGeometry(top, bottom, layerHeight, 4)}
                 material={
+
                   new THREE.MeshStandardMaterial({
                     color: config.color,
                     roughness: 0.2,
@@ -167,6 +171,7 @@ if (bubbleGroup) {
                 onPointerOver={(e) => {
                   e.stopPropagation();
                   incrementHover(i);
+
                   setBubbleHoverIndex(i);
                   document.body.style.cursor = "pointer";
                 }}
@@ -192,6 +197,7 @@ if (bubbleGroup) {
                   onPointerOut={(e) => {
                     e.stopPropagation();
                     decrementHover(i);
+                    
                     setStrictBubbleHoverIndex(null);
                   }}
                 >
@@ -202,6 +208,7 @@ if (bubbleGroup) {
                     metalness={0.5}
                   />
                 </mesh>
+
 
                 {/* Bubble Symbol */}
                 <Html position={[0, 0, 0]} center>
@@ -226,22 +233,21 @@ if (bubbleGroup) {
                 </Html>
 
                 {/* Bubble Label */}
-                {strictBubbleHoverIndex === i && (
-                  <Html position={[0, 0, 0]}>
-                    <div
-                      className="bubble-label"
-                      
-                    >
-                      {layer.text}
-                    </div>
-                  </Html>
-                )}
+
+                <Html position={[0, 0, 0]}>
+                  <AnimatedLabel
+                    text={layer.text}
+                    visible={strictBubbleHoverIndex === i}
+                  />
+                </Html>
               </group>
             </group>
           );
+
         })}
       </group>
     </>
-    
+
   );
 }
+
